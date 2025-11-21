@@ -9,20 +9,12 @@ import Foundation
 
 final class AppConfiguration {
     
-    lazy var apiBaseURL: String = {
-        guard let apiBaseURL = Bundle.main.object(forInfoDictionaryKey: "API_BASE_URL") as? String,
-              !apiBaseURL.isEmpty else {
-            fatalError("ApiBaseURL must not be empty in plist")
-        }
-        return apiBaseURL
+    lazy var apiBaseURL: URL = {
+        return url(forKey: "API_BASE_URL", description: "ApiBaseURL")
     }()
     
-    lazy var imagesBaseURL: String = {
-        guard let imageBaseURL = Bundle.main.object(forInfoDictionaryKey: "IMAGE_BASE_URL") as? String,
-              !imageBaseURL.isEmpty else {
-            fatalError("ImageBaseURL must not be empty in plist")
-        }
-        return imageBaseURL
+    lazy var imagesBaseURL: URL = {
+        return url(forKey: "IMAGE_BASE_URL", description: "ImageBaseURL")
     }()
 
     lazy var apiKey: String = {
@@ -32,4 +24,15 @@ final class AppConfiguration {
         }
         return apiKey
     }()
+
+    private func url(forKey key: String, description: String) -> URL {
+        guard let value = Bundle.main.object(forInfoDictionaryKey: key) as? String,
+              !value.isEmpty else {
+            fatalError("\(description) must not be empty in plist")
+        }
+        guard let url = URL(string: value) else {
+            fatalError("\(description) must be a valid URL string")
+        }
+        return url
+    }
 }
