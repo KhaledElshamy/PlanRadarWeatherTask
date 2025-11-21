@@ -1,20 +1,13 @@
-//
-//  AppConfiguration.swift
-//  PlanRadarTask
-//
-//  Created by Khaled Elshamy on 21/11/2025.
-//
-
 import Foundation
 
 final class AppConfiguration {
     
     lazy var apiBaseURL: URL = {
-        return url(forKey: "API_BASE_URL", description: "ApiBaseURL")
+        url(forKey: "API_BASE_URL", description: "ApiBaseURL")
     }()
     
     lazy var imagesBaseURL: URL = {
-        return url(forKey: "IMAGE_BASE_URL", description: "ImageBaseURL")
+        url(forKey: "IMAGE_BASE_URL", description: "ImageBaseURL")
     }()
 
     lazy var apiKey: String = {
@@ -36,3 +29,4 @@ final class AppConfiguration {
         return url
     }
 }
+

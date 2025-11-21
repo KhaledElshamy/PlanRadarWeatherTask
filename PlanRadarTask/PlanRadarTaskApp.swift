@@ -6,16 +6,14 @@
 //
 
 import SwiftUI
-import CoreData
 
 @main
 struct PlanRadarTaskApp: App {
-    let persistenceController = PersistenceController.shared
+    @StateObject private var coordinator = AppFlowCoordinator()
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            coordinator.rootView
         }
     }
 }
