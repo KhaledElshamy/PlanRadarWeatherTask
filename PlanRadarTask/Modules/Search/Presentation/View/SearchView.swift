@@ -23,6 +23,7 @@ struct SearchView: View {
     @ObservedObject var viewModel: SearchViewModel
     let onCancel: () -> Void
     
+    @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
     
     @State private var query: String = ""
@@ -41,7 +42,7 @@ struct SearchView: View {
 
             VStack(spacing: 24) {
                 header
-                description
+//                description
                 searchField
                 
                 if let result = latestResult {
@@ -71,6 +72,7 @@ struct SearchView: View {
                     .scaleEffect(1.2)
             }
         }
+        .navigationBarHidden(true)
         .onReceive(viewModel.query) { query in
             self.query = query
         }
@@ -85,25 +87,44 @@ struct SearchView: View {
         }
     }
 
-    /// Header section with title and cancel button.
+    /// Header section with back button and title.
     private var header: some View {
-        HStack {
-            Text("Add City")
-                .font(.title2.weight(.semibold))
-                .foregroundColor(colors.primaryText)
-
-            Spacer()
-
-            Button("Cancel") {
+        HStack(spacing: 16) {
+            Button(action: {
                 onCancel()
+                dismiss()
+            }) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(colors.buttonAccent)
+                        .frame(width: 50, height: 40)
+                    Image(systemName: "arrow.left")
+                        .foregroundColor(.white)
+                        .font(.system(size: 16, weight: .semibold))
+                }
             }
-            .foregroundColor(colors.buttonAccent)
+            
+            Spacer()
+            
+            VStack(spacing: 0) {
+                Text("ADD CITY")
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(colors.primaryText)
+            }
+            
+            Spacer()
+            
+            // Invisible spacer to center the title
+            Color.clear
+                .frame(width: 50, height: 40)
         }
+        .padding(.horizontal, 20)
+        .padding(.vertical, 16)
     }
 
     /// Description text for the search field.
     private var description: some View {
-        Text("Enter city, postcode or airport location")
+        Text("Enter city")
             .foregroundColor(colors.secondaryText)
             .font(.callout)
     }
