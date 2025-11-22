@@ -7,6 +7,14 @@
 
 import Foundation
 
+/// Protocol for FetchCityHistoryUseCase to enable testing and dependency injection.
+///
+/// **Access Control:**
+/// - Internal protocol: Used for testing and dependency injection
+protocol FetchCityHistoryUseCaseProtocol {
+    func execute(cityName: String) async throws -> [CityHistoryEntry]
+}
+
 /// Use case for fetching city history.
 ///
 /// **Specification Interpretation:**
@@ -41,4 +49,8 @@ final class FetchCityHistoryUseCase {
         return try await repository.fetchHistory(for: cityName)
     }
 }
+
+// MARK: - Protocol Conformance
+
+extension FetchCityHistoryUseCase: FetchCityHistoryUseCaseProtocol {}
 

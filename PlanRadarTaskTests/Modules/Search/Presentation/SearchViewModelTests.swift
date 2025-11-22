@@ -245,6 +245,9 @@ final class SearchViewModelTests: XCTestCase {
         // Wait for async operation
         await fulfillment(of: [expectation], timeout: 1.0)
         
+        // Give a small delay to ensure all async operations complete
+        try? await Task.sleep(nanoseconds: 50_000_000) // 0.05 seconds
+        
         // Then
         XCTAssertFalse(receivedQueries.isEmpty)
     }
@@ -274,6 +277,9 @@ final class SearchViewModelTests: XCTestCase {
         // Wait for async operation
         await fulfillment(of: [expectation], timeout: 1.0)
         
+        // Give a small delay to ensure all async operations complete
+        try? await Task.sleep(nanoseconds: 50_000_000) // 0.05 seconds
+        
         // Then
         XCTAssertTrue(loadingStates.contains(true), "Should set loading to true")
         XCTAssertTrue(loadingStates.contains(false), "Should set loading to false")
@@ -300,6 +306,9 @@ final class SearchViewModelTests: XCTestCase {
         // Wait for async operation
         await fulfillment(of: [expectation], timeout: 1.0)
         
+        // Give a small delay to ensure all async operations complete
+        try? await Task.sleep(nanoseconds: 50_000_000) // 0.05 seconds
+        
         // Then
         XCTAssertTrue(isEmptyStates.contains(true), "Should emit true when query is empty")
     }
@@ -324,6 +333,9 @@ final class SearchViewModelTests: XCTestCase {
         
         // Wait for async operation
         await fulfillment(of: [expectation], timeout: 1.0)
+        
+        // Give a small delay to ensure all async operations complete
+        try? await Task.sleep(nanoseconds: 50_000_000) // 0.05 seconds
         
         // Then
         XCTAssertTrue(canSubmitStates.contains(true), "Should emit true when query is not empty")
@@ -353,6 +365,9 @@ final class SearchViewModelTests: XCTestCase {
         
         // Wait for async operation
         await fulfillment(of: [expectation], timeout: 1.0)
+        
+        // Give a small delay to ensure all async operations complete
+        try? await Task.sleep(nanoseconds: 50_000_000) // 0.05 seconds
         
         // Then
         XCTAssertTrue(receivedResults.contains { $0 != nil }, "Should emit search result")

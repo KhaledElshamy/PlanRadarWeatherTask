@@ -7,6 +7,14 @@
 
 import Foundation
 
+/// Protocol for FetchWeatherIconUseCase to enable testing and dependency injection.
+///
+/// **Access Control:**
+/// - Internal protocol: Used for testing and dependency injection
+protocol FetchWeatherIconUseCaseProtocol {
+    func execute(iconCode: String) async throws -> Data
+}
+
 /// Use case for fetching weather icon images.
 ///
 /// **Specification Interpretation:**
@@ -41,4 +49,8 @@ final class FetchWeatherIconUseCase {
         return try await repository.fetchWeatherIcon(iconCode: iconCode)
     }
 }
+
+// MARK: - Protocol Conformance
+
+extension FetchWeatherIconUseCase: FetchWeatherIconUseCaseProtocol {}
 

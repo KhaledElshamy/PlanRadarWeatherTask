@@ -155,7 +155,7 @@ final class CityHistoryViewModel: ObservableObject, CityHistoryViewModelProtocol
     // MARK: - Private Properties
     
     /// Use case for fetching city history.
-    private let fetchHistoryUseCase: FetchCityHistoryUseCase
+    private let fetchHistoryUseCase: FetchCityHistoryUseCaseProtocol
     
     /// Cancellables for managing Combine subscriptions.
     private var cancellables = Set<AnyCancellable>()
@@ -172,7 +172,7 @@ final class CityHistoryViewModel: ObservableObject, CityHistoryViewModelProtocol
     ///   - fetchHistoryUseCase: Use case for fetching city history
     init(
         cityName: String,
-        fetchHistoryUseCase: FetchCityHistoryUseCase
+        fetchHistoryUseCase: FetchCityHistoryUseCaseProtocol
     ) {
         self.cityNameValue = cityName
         self.fetchHistoryUseCase = fetchHistoryUseCase

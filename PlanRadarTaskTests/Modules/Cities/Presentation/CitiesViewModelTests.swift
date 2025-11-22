@@ -137,6 +137,9 @@ final class CitiesViewModelTests: XCTestCase {
         // Wait for async operation
         await fulfillment(of: [expectation], timeout: 1.0)
         
+        // Give a small delay to ensure all async operations complete
+        try? await Task.sleep(nanoseconds: 50_000_000) // 0.05 seconds
+        
         // Then
         XCTAssertTrue(loadingStates.contains(true), "Should set loading to true")
         XCTAssertTrue(loadingStates.contains(false), "Should set loading to false")
@@ -257,6 +260,9 @@ final class CitiesViewModelTests: XCTestCase {
         // Wait for async operation
         await fulfillment(of: [expectation], timeout: 1.0)
         
+        // Give a small delay to ensure all async operations complete
+        try? await Task.sleep(nanoseconds: 50_000_000) // 0.05 seconds
+        
         // Then
         XCTAssertFalse(receivedCities.isEmpty)
     }
@@ -282,6 +288,9 @@ final class CitiesViewModelTests: XCTestCase {
         
         // Wait for async operation
         await fulfillment(of: [expectation], timeout: 1.0)
+        
+        // Give a small delay to ensure all async operations complete
+        try? await Task.sleep(nanoseconds: 50_000_000) // 0.05 seconds
         
         // Then
         XCTAssertTrue(isEmptyStates.contains(true), "Should emit true when list is empty")
@@ -310,6 +319,9 @@ final class CitiesViewModelTests: XCTestCase {
         
         // Wait for async operation
         await fulfillment(of: [expectation], timeout: 1.0)
+        
+        // Give a small delay to ensure all async operations complete
+        try? await Task.sleep(nanoseconds: 50_000_000) // 0.05 seconds
         
         // Then
         XCTAssertTrue(errorMessages.contains("Test error"), "Should emit error message")

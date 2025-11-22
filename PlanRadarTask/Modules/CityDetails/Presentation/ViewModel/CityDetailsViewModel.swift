@@ -200,7 +200,7 @@ final class CityDetailsViewModel: ObservableObject, CityDetailsViewModelProtocol
     private let city: City
     
     /// Use case for fetching weather icon images.
-    private let fetchWeatherIconUseCase: FetchWeatherIconUseCase
+    private let fetchWeatherIconUseCase: FetchWeatherIconUseCaseProtocol
     
     /// Cancellables for managing Combine subscriptions.
     private var cancellables = Set<AnyCancellable>()
@@ -215,7 +215,7 @@ final class CityDetailsViewModel: ObservableObject, CityDetailsViewModelProtocol
     /// - Parameters:
     ///   - city: The city entity to display
     ///   - fetchWeatherIconUseCase: The use case for fetching weather icons
-    init(city: City, fetchWeatherIconUseCase: FetchWeatherIconUseCase) {
+    init(city: City, fetchWeatherIconUseCase: FetchWeatherIconUseCaseProtocol) {
         self.city = city
         self.fetchWeatherIconUseCase = fetchWeatherIconUseCase
         
