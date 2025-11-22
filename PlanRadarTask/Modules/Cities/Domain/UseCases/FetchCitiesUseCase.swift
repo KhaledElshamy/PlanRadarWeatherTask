@@ -7,6 +7,14 @@
 
 import Foundation
 
+/// Protocol for FetchCitiesUseCase to enable testing and dependency injection.
+///
+/// **Access Control:**
+/// - Internal protocol: Used for testing and dependency injection
+protocol FetchCitiesUseCaseProtocol {
+    func execute() async throws -> [City]
+}
+
 /// Use case for fetching all saved cities from local storage.
 ///
 /// **Specification Interpretation:**
@@ -39,4 +47,8 @@ public final class FetchCitiesUseCase {
         try await repository.fetchSavedCities()
     }
 }
+
+// MARK: - Protocol Conformance
+
+extension FetchCitiesUseCase: FetchCitiesUseCaseProtocol {}
 

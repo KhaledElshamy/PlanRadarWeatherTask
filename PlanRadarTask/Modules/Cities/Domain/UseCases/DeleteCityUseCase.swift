@@ -7,6 +7,14 @@
 
 import Foundation
 
+/// Protocol for DeleteCityUseCase to enable testing and dependency injection.
+///
+/// **Access Control:**
+/// - Internal protocol: Used for testing and dependency injection
+protocol DeleteCityUseCaseProtocol {
+    func execute(city: City) async throws
+}
+
 /// Use case for deleting a city from local storage.
 ///
 /// **Specification Interpretation:**
@@ -39,4 +47,8 @@ public final class DeleteCityUseCase {
         try await repository.delete(city)
     }
 }
+
+// MARK: - Protocol Conformance
+
+extension DeleteCityUseCase: DeleteCityUseCaseProtocol {}
 

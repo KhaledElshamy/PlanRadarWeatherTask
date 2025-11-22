@@ -145,10 +145,10 @@ final class CitiesViewModel: ObservableObject, CitiesViewModelProtocol {
     // MARK: - Private Properties
     
     /// Use case for fetching cities from storage.
-    private let fetchUseCase: FetchCitiesUseCase
+    private let fetchUseCase: FetchCitiesUseCaseProtocol
     
     /// Use case for deleting a city from storage.
-    private let deleteUseCase: DeleteCityUseCase
+    private let deleteUseCase: DeleteCityUseCaseProtocol
     
     /// Cancellables for managing Combine subscriptions.
     private var cancellables = Set<AnyCancellable>()
@@ -164,8 +164,8 @@ final class CitiesViewModel: ObservableObject, CitiesViewModelProtocol {
     ///   - fetchUseCase: Use case for fetching cities
     ///   - deleteUseCase: Use case for deleting cities
     init(
-        fetchUseCase: FetchCitiesUseCase,
-        deleteUseCase: DeleteCityUseCase
+        fetchUseCase: FetchCitiesUseCaseProtocol,
+        deleteUseCase: DeleteCityUseCaseProtocol
     ) {
         self.fetchUseCase = fetchUseCase
         self.deleteUseCase = deleteUseCase
