@@ -7,35 +7,108 @@
 
 import Foundation
 
+/// Network layer error types.
+///
+/// **Specification Interpretation:**
+/// These errors represent various failure scenarios that can occur during network
+/// operations. They provide detailed information to help with debugging and user-facing
+/// error messages.
+///
+/// **Access Control:**
+/// - Internal enum: Used within the infrastructure module
 enum NetworkError: Error {
+    /// HTTP error with status code and optional response data
     case error(statusCode: Int, data: Data?)
+    /// No internet connection available
     case notConnected
+    /// Request was cancelled
     case cancelled
+    /// Generic error wrapping other error types
     case generic(Error)
+    /// Failed to generate a valid URL from the endpoint
     case urlGeneration
 }
 
+/// Protocol for network service implementations.
+///
+/// **Specification Interpretation:**
+/// This protocol abstracts network operations, allowing for easy testing and swapping
+/// of network implementations. The service executes requests and returns raw Data.
+///
+/// **Access Control:**
+/// - Internal protocol: Used within the infrastructure module
 protocol NetworkService {
+    /// Executes a network request for the given endpoint.
+    ///
+    /// - Parameter endpoint: The endpoint configuration
+    /// - Returns: Optional response data
+    /// - Throws: NetworkError for various failure scenarios
     func request(endpoint: Requestable) async throws -> Data?
 }
 
+/// Protocol for cancellable network operations.
+///
+/// **Access Control:**
+/// - Internal protocol: Used within the infrastructure module
 protocol NetworkCancellable {
+    /// Cancels the ongoing network operation
     func cancel()
 }
 
+/// Protocol for network error logging.
+///
+/// **Specification Interpretation:**
+/// This protocol allows for pluggable logging implementations, enabling different
+/// logging strategies (console, file, remote) without changing the network layer.
+///
+/// **Access Control:**
+/// - Internal protocol: Used within the infrastructure module
 protocol NetworkErrorLogger {
+    /// Logs a network request before it is sent.
+    ///
+    /// - Parameter request: The URLRequest to log
     func log(request: URLRequest)
+    
+    /// Logs network response data.
+    ///
+    /// - Parameters:
+    ///   - data: The response data
+    ///   - response: The URLResponse object
     func log(responseData data: Data?, response: URLResponse?)
+    
+    /// Logs a network error.
+    ///
+    /// - Parameter error: The error to log
     func log(error: Error)
 }
 
-/// Executes endpoint-backed requests via the Objective-C bridge while keeping a Swift-friendly surface.
+/// Default implementation of NetworkService using Objective-C network layer.
+///
+/// **Specification Interpretation:**
+/// This class bridges Swift's async/await concurrency model with the Objective-C
+/// network implementation. It handles request execution, error resolution, and logging
+/// while maintaining a clean Swift interface.
+///
+/// **Access Control:**
+/// - Internal class: Used within the infrastructure module
+/// - Private dependencies: All dependencies are encapsulated
 final class DefaultNetworkService {
     
+    /// Network configuration (base URL, headers, query parameters)
     private let config: NetworkConfigurable
+    
+    /// Objective-C network performer for actual request execution
     private let performer: ObjCNetworkPerformer
+    
+    /// Logger for network operations
     private let logger: NetworkErrorLogger
     
+    /// Initializes the network service with dependencies.
+    ///
+    /// - Parameters:
+    ///   - config: Network configuration
+    ///   - performer: Objective-C network performer (defaults to new instance)
+    ///   - logger: Error logger (defaults to console logger)
     init(
         config: NetworkConfigurable,
         performer: ObjCNetworkPerformer = ObjCNetworkPerformer(),
@@ -46,6 +119,14 @@ final class DefaultNetworkService {
         self.logger = logger
     }
     
+    /// Executes a URLRequest and returns the response data.
+    ///
+    /// **Specification:** Logs the request, executes it via the Objective-C bridge,
+    /// logs the response, and resolves any errors to NetworkError types.
+    ///
+    /// - Parameter request: The URLRequest to execute
+    /// - Returns: Optional response data
+    /// - Throws: NetworkError for various failure scenarios
     private func execute(request: URLRequest) async throws -> Data? {
         logger.log(request: request)
         do {
@@ -59,6 +140,13 @@ final class DefaultNetworkService {
         }
     }
     
+    /// Resolves generic errors to specific NetworkError types.
+    ///
+    /// **Specification:** Maps Objective-C NSError types and URLError codes to
+    /// appropriate NetworkError cases for consistent error handling.
+    ///
+    /// - Parameter error: The error to resolve
+    /// - Returns: A NetworkError representing the failure
     private func resolve(error: Error) -> NetworkError {
         if let networkError = error as? NetworkError {
             return networkError
@@ -97,8 +185,17 @@ extension DefaultNetworkService: NetworkService {
 
 // MARK: - Logger
 
-/// Lightweight logger that keeps the legacy prints for debugging.
+/// Default implementation of NetworkErrorLogger for console output.
+///
+/// **Specification Interpretation:**
+/// This logger prints network requests, responses, and errors to the console.
+/// In DEBUG builds, it provides detailed information for debugging. In release
+/// builds, it remains silent to avoid performance overhead.
+///
+/// **Access Control:**
+/// - Internal class: Used within the infrastructure module
 final class DefaultNetworkErrorLogger: NetworkErrorLogger {
+    /// Initializes the logger.
     init() { }
 
     func log(request: URLRequest) {
@@ -128,8 +225,13 @@ final class DefaultNetworkErrorLogger: NetworkErrorLogger {
 // MARK: - NetworkError extension
 
 extension NetworkError {
+    /// Convenience property to check if the error is a 404 Not Found.
     var isNotFoundError: Bool { return hasStatusCode(404) }
     
+    /// Checks if the error has a specific HTTP status code.
+    ///
+    /// - Parameter codeError: The status code to check
+    /// - Returns: True if the error matches the status code
     func hasStatusCode(_ codeError: Int) -> Bool {
         switch self {
         case let .error(code, _):
