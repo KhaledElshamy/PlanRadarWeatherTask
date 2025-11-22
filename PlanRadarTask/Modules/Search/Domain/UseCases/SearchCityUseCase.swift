@@ -7,6 +7,14 @@
 
 import Foundation
 
+/// Protocol for SearchCityUseCase to enable testing and dependency injection.
+///
+/// **Access Control:**
+/// - Internal protocol: Used for testing and dependency injection
+protocol SearchCityUseCaseProtocol {
+    func execute(query: String) async throws -> City
+}
+
 /// Use case for searching city weather information via the API.
 ///
 /// **Specification Interpretation:**
@@ -41,4 +49,8 @@ public final class SearchCityUseCase {
         try await repository.searchCity(named: query)
     }
 }
+
+// MARK: - Protocol Conformance
+
+extension SearchCityUseCase: SearchCityUseCaseProtocol {}
 

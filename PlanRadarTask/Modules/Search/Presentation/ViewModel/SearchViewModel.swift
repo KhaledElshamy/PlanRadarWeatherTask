@@ -178,10 +178,10 @@ final class SearchViewModel: ObservableObject, SearchViewModelProtocol {
     // MARK: - Private Properties
     
     /// Use case for searching cities via API.
-    private let searchUseCase: SearchCityUseCase
+    private let searchUseCase: SearchCityUseCaseProtocol
     
     /// Use case for adding a city to local storage.
-    private let addUseCase: AddCityUseCase
+    private let addUseCase: AddCityUseCaseProtocol
     
     /// Completion callback to be called after successful search and add.
     private let completion: () -> Void
@@ -200,8 +200,8 @@ final class SearchViewModel: ObservableObject, SearchViewModelProtocol {
     ///   - addUseCase: Use case for adding cities to storage
     ///   - completion: Completion callback called after successful search and add
     init(
-        searchUseCase: SearchCityUseCase,
-        addUseCase: AddCityUseCase,
+        searchUseCase: SearchCityUseCaseProtocol,
+        addUseCase: AddCityUseCaseProtocol,
         completion: @escaping () -> Void
     ) {
         self.searchUseCase = searchUseCase

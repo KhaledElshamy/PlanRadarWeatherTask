@@ -7,6 +7,14 @@
 
 import Foundation
 
+/// Protocol for AddCityUseCase to enable testing and dependency injection.
+///
+/// **Access Control:**
+/// - Internal protocol: Used for testing and dependency injection
+protocol AddCityUseCaseProtocol {
+    func execute(city: City) async throws
+}
+
 /// Use case for adding a city to local storage.
 ///
 /// **Specification Interpretation:**
@@ -39,4 +47,8 @@ public final class AddCityUseCase {
         try await storage.save(city)
     }
 }
+
+// MARK: - Protocol Conformance
+
+extension AddCityUseCase: AddCityUseCaseProtocol {}
 
