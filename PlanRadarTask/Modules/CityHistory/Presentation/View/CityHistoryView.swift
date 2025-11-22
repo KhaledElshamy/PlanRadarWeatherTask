@@ -22,6 +22,7 @@ struct CityHistoryView: View {
     
     @ObservedObject var viewModel: CityHistoryViewModel
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var colorScheme
     
     @State private var historyEntries: [CityHistoryEntry] = []
     @State private var isLoading: Bool = false
@@ -29,9 +30,13 @@ struct CityHistoryView: View {
     @State private var cityName: String = ""
     @State private var selectedEntry: CityHistoryEntry?
     
+    private var colors: AppColors {
+        AppColors(colorScheme: colorScheme)
+    }
+    
     var body: some View {
         ZStack {
-            Colors.background
+            colors.background
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
@@ -65,7 +70,7 @@ struct CityHistoryView: View {
             Button(action: { dismiss() }) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 8)
-                        .fill(Colors.accent)
+                        .fill(colors.buttonAccent)
                         .frame(width: 50, height: 40)
                     Image(systemName: "arrow.left")
                         .foregroundColor(.white)
@@ -78,10 +83,10 @@ struct CityHistoryView: View {
             VStack(spacing: 0) {
                 Text(cityName.uppercased())
                     .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(.white)
+                    .foregroundColor(colors.primaryText)
                 Text("HISTORICAL")
                     .font(.system(size: 18, weight: .semibold))
-                    .foregroundColor(.white)
+                    .foregroundColor(colors.primaryText)
             }
             
             Spacer()
@@ -112,10 +117,10 @@ struct CityHistoryView: View {
     private var emptyState: some View {
         VStack(spacing: 16) {
             Text("No historical data available")
-                .foregroundColor(.gray)
+                .foregroundColor(colors.secondaryText)
                 .font(.callout)
             Text("Search for this city to start building history")
-                .foregroundColor(.gray.opacity(0.7))
+                .foregroundColor(colors.secondaryText.opacity(0.7))
                 .font(.caption)
         }
         .padding()
@@ -137,20 +142,6 @@ struct CityHistoryView: View {
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
     }
-    
-    // MARK: - Colors
-    
-    private enum Colors {
-        static let background = LinearGradient(
-            gradient: Gradient(colors: [
-                Color(red: 0.03, green: 0.03, blue: 0.05),
-                Color(red: 0.01, green: 0.01, blue: 0.03)
-            ]),
-            startPoint: .top,
-            endPoint: .bottom
-        )
-        static let accent = Color(red: 1, green: 0.27, blue: 0.41)
-    }
 }
 
 // MARK: - History Row
@@ -162,17 +153,23 @@ struct CityHistoryView: View {
 private struct HistoryRow: View {
     let entry: CityHistoryEntry
     
+    @Environment(\.colorScheme) private var colorScheme
+    
+    private var colors: AppColors {
+        AppColors(colorScheme: colorScheme)
+    }
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             // Date and time in gray
             Text(formatDate(entry.requestDate))
                 .font(.system(size: 14, weight: .regular))
-                .foregroundColor(.gray)
+                .foregroundColor(colors.secondaryText)
             
-            // Weather condition and temperature in red
+            // Weather condition and temperature
             Text("\(entry.description), \(entry.temperature)")
                 .font(.system(size: 16, weight: .semibold))
-                .foregroundColor(Color(red: 1, green: 0.27, blue: 0.41))
+                .foregroundColor(colors.buttonAccent)
         }
         .padding(.vertical, 12)
         .padding(.horizontal, 16)
@@ -202,18 +199,17 @@ private struct CityHistoryDetailView: View {
     let entry: CityHistoryEntry
     @Environment(\.dismiss) private var dismiss
     
+    @Environment(\.colorScheme) private var colorScheme
+    
+    private var colors: AppColors {
+        AppColors(colorScheme: colorScheme)
+    }
+    
     var body: some View {
         NavigationStack {
             ZStack {
-                LinearGradient(
-                    gradient: Gradient(colors: [
-                        Color(red: 0.03, green: 0.03, blue: 0.05),
-                        Color(red: 0.01, green: 0.01, blue: 0.03)
-                    ]),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .ignoresSafeArea()
+                colors.background
+                    .ignoresSafeArea()
                 
                 VStack(spacing: 32) {
                     // Weather Icon
@@ -231,7 +227,7 @@ private struct CityHistoryDetailView: View {
                             case .failure:
                                 Image(systemName: "cloud.fill")
                                     .font(.system(size: 80))
-                                    .foregroundColor(Color(red: 1, green: 0.27, blue: 0.41))
+                                    .foregroundColor(colors.buttonAccent)
                             @unknown default:
                                 EmptyView()
                             }
@@ -257,7 +253,7 @@ private struct CityHistoryDetailView: View {
                     Button("Done") {
                         dismiss()
                     }
-                    .foregroundColor(Color(red: 1, green: 0.27, blue: 0.41))
+                    .foregroundColor(colors.buttonAccent)
                 }
             }
         }
@@ -278,17 +274,23 @@ private struct DetailRow: View {
     let label: String
     let value: String
     
+    @Environment(\.colorScheme) private var colorScheme
+    
+    private var colors: AppColors {
+        AppColors(colorScheme: colorScheme)
+    }
+    
     var body: some View {
         HStack {
             Text(label)
                 .font(.system(size: 14, weight: .regular))
-                .foregroundColor(.gray)
+                .foregroundColor(colors.secondaryText)
             
             Spacer()
             
             Text(value)
                 .font(.system(size: 14, weight: .semibold))
-                .foregroundColor(Color(red: 1, green: 0.27, blue: 0.41))
+                .foregroundColor(colors.buttonAccent)
         }
     }
 }

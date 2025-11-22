@@ -23,14 +23,20 @@ struct SearchView: View {
     @ObservedObject var viewModel: SearchViewModel
     let onCancel: () -> Void
     
+    @Environment(\.colorScheme) private var colorScheme
+    
     @State private var query: String = ""
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
     @State private var latestResult: SearchResult?
+    
+    private var colors: AppColors {
+        AppColors(colorScheme: colorScheme)
+    }
 
     var body: some View {
         ZStack {
-            Colors.background
+            colors.background
                 .ignoresSafeArea()
 
             VStack(spacing: 24) {
@@ -40,14 +46,14 @@ struct SearchView: View {
                 
                 if let result = latestResult {
                     Text("Saved \(result.city.displayName)")
-                        .foregroundColor(.pink)
+                        .foregroundColor(colors.buttonAccent)
                         .font(.callout)
                         .padding(.horizontal)
                 }
                 
                 if let error = errorMessage {
                     Text(error)
-                        .foregroundColor(.red)
+                        .foregroundColor(AppColors.error)
                         .font(.caption)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
@@ -84,21 +90,21 @@ struct SearchView: View {
         HStack {
             Text("Add City")
                 .font(.title2.weight(.semibold))
-                .foregroundColor(.white)
+                .foregroundColor(colors.primaryText)
 
             Spacer()
 
             Button("Cancel") {
                 onCancel()
             }
-            .foregroundColor(.pink)
+            .foregroundColor(colors.buttonAccent)
         }
     }
 
     /// Description text for the search field.
     private var description: some View {
         Text("Enter city, postcode or airport location")
-            .foregroundColor(.white.opacity(0.8))
+            .foregroundColor(colors.secondaryText)
             .font(.callout)
     }
 
@@ -106,10 +112,10 @@ struct SearchView: View {
     private var searchField: some View {
         HStack {
             Image(systemName: "magnifyingglass")
-                .foregroundColor(.white.opacity(0.6))
+                .foregroundColor(colors.icon)
             
             TextField("Search", text: $query)
-                .foregroundColor(.white)
+                .foregroundColor(colors.primaryText)
                 .onSubmit {
                     viewModel.submitSubject.send()
                 }
@@ -120,19 +126,10 @@ struct SearchView: View {
             Button("Search") {
                 viewModel.submitSubject.send()
             }
-            .foregroundColor(.pink)
+            .foregroundColor(colors.buttonAccent)
         }
         .padding()
-        .background(Color.white.opacity(0.1))
+        .background(colors.cardBackground.opacity(0.5))
         .cornerRadius(14)
-    }
-
-    /// Color definitions for the search view.
-    private enum Colors {
-        static let background = LinearGradient(
-            gradient: Gradient(colors: [Color.black, Color(red: 0.06, green: 0.06, blue: 0.09)]),
-            startPoint: .top,
-            endPoint: .bottom
-        )
     }
 }

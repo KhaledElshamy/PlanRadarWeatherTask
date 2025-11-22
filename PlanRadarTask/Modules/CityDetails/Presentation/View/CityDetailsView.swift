@@ -21,13 +21,18 @@ struct CityDetailsView: View {
     
     @ObservedObject var viewModel: CityDetailsViewModel
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) private var colorScheme
     
     /// The city being displayed (for sheet presentation)
     let city: City
     
+    private var colors: AppColors {
+        AppColors(colorScheme: colorScheme)
+    }
+    
     var body: some View {
         ZStack {
-            Colors.background
+            colors.background
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
@@ -51,7 +56,7 @@ struct CityDetailsView: View {
             Button(action: { dismiss() }) {
                 ZStack {
                     RoundedRectangle(cornerRadius: 8)
-                        .fill(Colors.accent)
+                        .fill(colors.buttonAccent)
                         .frame(width: 40, height: 40)
                     Image(systemName: "xmark")
                         .foregroundColor(.white)
@@ -63,7 +68,7 @@ struct CityDetailsView: View {
             
             Text(viewModel.cityNameValue.uppercased())
                 .font(.system(size: 18, weight: .semibold))
-                .foregroundColor(.gray)
+                .foregroundColor(colors.headerText)
                 .kerning(1.5)
             
             Spacer()
@@ -93,7 +98,7 @@ struct CityDetailsView: View {
         }
         .padding(32)
         .frame(maxWidth: .infinity)
-        .background(Colors.cardBackground)
+        .background(colors.cardBackground)
         .cornerRadius(20)
     }
     
@@ -104,30 +109,14 @@ struct CityDetailsView: View {
         VStack(spacing: 8) {
             Text("WEATHER INFORMATION FOR \(viewModel.cityNameValue.uppercased()) RECEIVED ON")
                 .font(.system(size: 12, weight: .regular))
-                .foregroundColor(.gray)
+                .foregroundColor(colors.secondaryText)
                 .multilineTextAlignment(.center)
             
             Text(viewModel.formattedUpdateTimeValue)
                 .font(.system(size: 12, weight: .regular))
-                .foregroundColor(.gray)
+                .foregroundColor(colors.secondaryText)
         }
         .padding(.top, 32)
-    }
-    
-    // MARK: - Colors
-    
-    private enum Colors {
-        static let background = LinearGradient(
-            gradient: Gradient(colors: [
-                Color(red: 0.03, green: 0.03, blue: 0.05),
-                Color(red: 0.01, green: 0.01, blue: 0.03)
-            ]),
-            startPoint: .top,
-            endPoint: .bottom
-        )
-        
-        static let cardBackground = Color(red: 0.15, green: 0.15, blue: 0.17)
-        static let accent = Color(red: 1, green: 0.27, blue: 0.41)
     }
 }
 
@@ -139,8 +128,13 @@ struct CityDetailsView: View {
 /// - Private struct: Used only within CityDetailsView
 private struct WeatherIconView: View {
     @ObservedObject var viewModel: CityDetailsViewModel
+    @Environment(\.colorScheme) private var colorScheme
     @State private var iconImage: Image?
     @State private var isLoading: Bool = false
+    
+    private var colors: AppColors {
+        AppColors(colorScheme: colorScheme)
+    }
     
     var body: some View {
         Group {
@@ -155,7 +149,7 @@ private struct WeatherIconView: View {
             } else {
                 Image(systemName: "cloud.fill")
                     .font(.system(size: 80))
-                    .foregroundColor(Color(red: 1, green: 0.27, blue: 0.41))
+                    .foregroundColor(colors.buttonAccent)
             }
         }
         .onReceive(viewModel.weatherIconImage) { image in
@@ -177,17 +171,23 @@ private struct WeatherDetailRow: View {
     let label: String
     let value: String
     
+    @Environment(\.colorScheme) private var colorScheme
+    
+    private var colors: AppColors {
+        AppColors(colorScheme: colorScheme)
+    }
+    
     var body: some View {
         HStack {
             Text(label)
                 .font(.system(size: 14, weight: .regular))
-                .foregroundColor(.gray)
+                .foregroundColor(colors.secondaryText)
             
             Spacer()
             
             Text(value)
                 .font(.system(size: 14, weight: .semibold))
-                .foregroundColor(Color(red: 1, green: 0.27, blue: 0.41))
+                .foregroundColor(colors.buttonAccent)
         }
     }
 }

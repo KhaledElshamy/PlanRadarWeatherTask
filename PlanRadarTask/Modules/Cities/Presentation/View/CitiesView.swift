@@ -13,14 +13,20 @@ struct CitiesView: View {
     @ObservedObject var viewModel: CitiesViewModel
     @ObservedObject var coordinator: CitiesFlowCoordinator
     
+    @Environment(\.colorScheme) private var colorScheme
+    
     @State private var cities: [City] = []
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
     
+    private var colors: AppColors {
+        AppColors(colorScheme: colorScheme)
+    }
+    
     var body: some View {
         NavigationStack(path: $coordinator.path) {
             ZStack {
-                Colors.background
+                colors.background
                     .ignoresSafeArea()
 
                 VStack(spacing: 24) {
@@ -36,7 +42,7 @@ struct CitiesView: View {
 
                 if isLoading {
                     ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .pink))
+                        .progressViewStyle(CircularProgressViewStyle(tint: AppColors.accent))
                         .scaleEffect(1.3)
                 }
             }
@@ -74,7 +80,7 @@ struct CitiesView: View {
         HStack {
             Text("CITIES")
                 .font(.system(size: 14, weight: .semibold))
-                .foregroundColor(.gray)
+                .foregroundColor(colors.headerText)
                 .kerning(2)
 
             Spacer()
@@ -82,7 +88,7 @@ struct CitiesView: View {
             Button(action: coordinator.showSearch) {
                 ZStack {
                     Circle()
-                        .fill(Colors.accent)
+                        .fill(colors.buttonAccent)
                         .frame(width: 48, height: 48)
                     Image(systemName: "plus")
                         .foregroundColor(.white)
@@ -105,7 +111,7 @@ struct CitiesView: View {
 
     private var placeholder: some View {
         Text("Start adding cities by tapping the plus button.")
-            .foregroundColor(.gray.opacity(0.8))
+            .foregroundColor(colors.secondaryText)
             .multilineTextAlignment(.center)
             .padding()
             .background(.ultraThinMaterial)
@@ -140,6 +146,12 @@ private struct CityRow: View {
     let city: City
     let onCityTap: () -> Void
     let onHistoryTap: () -> Void
+    
+    @Environment(\.colorScheme) private var colorScheme
+    
+    private var colors: AppColors {
+        AppColors(colorScheme: colorScheme)
+    }
 
     var body: some View {
         HStack(spacing: 12) {
@@ -147,7 +159,7 @@ private struct CityRow: View {
             Button(action: onCityTap) {
                 Text(city.displayName)
                     .font(.system(size: 20, weight: .semibold))
-                    .foregroundColor(.white)
+                    .foregroundColor(colors.primaryText)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             .buttonStyle(PlainButtonStyle())
@@ -155,7 +167,7 @@ private struct CityRow: View {
             // History arrow button - shows history
             Button(action: onHistoryTap) {
                 Image(systemName: "arrow.right")
-                    .foregroundColor(Color(red: 1, green: 0.27, blue: 0.41))
+                    .foregroundColor(colors.arrow)
                     .font(.system(size: 16, weight: .semibold))
             }
             .buttonStyle(PlainButtonStyle())
@@ -165,19 +177,6 @@ private struct CityRow: View {
     }
 }
 
-private extension CitiesView {
-    enum Colors {
-        static let background = LinearGradient(
-            gradient: Gradient(colors: [
-                Color(red: 0.03, green: 0.03, blue: 0.05),
-                Color(red: 0.01, green: 0.01, blue: 0.03)
-            ]),
-            startPoint: .top,
-            endPoint: .bottom
-        )
-        static let accent = Color(red: 1, green: 0.27, blue: 0.41)
-    }
-}
 
 private struct ErrorBanner: View {
     let message: String
@@ -189,7 +188,7 @@ private struct ErrorBanner: View {
                 .foregroundColor(.white)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
-                .background(Color.red.opacity(0.9))
+                .background(AppColors.error.opacity(0.9))
                 .cornerRadius(12)
         }
         .padding(.top, 60)
