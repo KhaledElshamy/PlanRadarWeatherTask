@@ -16,7 +16,7 @@ import Foundation
 ///
 /// **Access Control:**
 /// - Internal enum: Used within the infrastructure module
-enum NetworkError: Error {
+enum NetworkError: Error, Equatable {
     /// HTTP error with status code and optional response data
     case error(statusCode: Int, data: Data?)
     /// No internet connection available
@@ -24,9 +24,44 @@ enum NetworkError: Error {
     /// Request was cancelled
     case cancelled
     /// Generic error wrapping other error types
+    /// Note: Equatable conformance compares error descriptions since Error is not Equatable
     case generic(Error)
     /// Failed to generate a valid URL from the endpoint
     case urlGeneration
+    
+    /// Equatable conformance for testing purposes.
+    ///
+    /// **Note:** The `generic` case compares error descriptions since `Error` is not `Equatable`.
+    /// **Note:** Data comparison uses `==` which works for Data types in Swift.
+    static func == (lhs: NetworkError, rhs: NetworkError) -> Bool {
+        switch (lhs, rhs) {
+        case (.error(let lhsCode, let lhsData), .error(let rhsCode, let rhsData)):
+            // Compare status codes and data (handles nil cases)
+            guard lhsCode == rhsCode else { return false }
+            if lhsData == nil && rhsData == nil {
+                return true
+            }
+            guard let lhsData = lhsData, let rhsData = rhsData else {
+                return false
+            }
+            return lhsData == rhsData
+        case (.notConnected, .notConnected):
+            return true
+        case (.cancelled, .cancelled):
+            return true
+        case (.urlGeneration, .urlGeneration):
+            return true
+        case (.generic(let lhsError), .generic(let rhsError)):
+            // Compare error descriptions since Error is not Equatable
+            let lhsNSError = lhsError as NSError
+            let rhsNSError = rhsError as NSError
+            return lhsNSError.domain == rhsNSError.domain &&
+                   lhsNSError.code == rhsNSError.code &&
+                   lhsError.localizedDescription == rhsError.localizedDescription
+        default:
+            return false
+        }
+    }
 }
 
 /// Protocol for network service implementations.
@@ -174,12 +209,22 @@ final class DefaultNetworkService {
 extension DefaultNetworkService: NetworkService {
     
     func request(endpoint: Requestable) async throws -> Data? {
+        // Only catch URL generation errors, let network errors propagate
+        let urlRequest: URLRequest
         do {
-            let urlRequest = try endpoint.urlRequest(with: config)
-            return try await execute(request: urlRequest)
+            urlRequest = try endpoint.urlRequest(with: config)
+        } catch let error as RequestGenerationError {
+            // URL generation failed, convert to NetworkError
+            throw NetworkError.urlGeneration
         } catch {
+            // If it's not a RequestGenerationError, it might be an encoding error
+            // from queryParametersEncodable?.toDictionary() or bodyParametersEncodable?.toDictionary()
+            // These should also be treated as URL generation failures
             throw NetworkError.urlGeneration
         }
+        
+        // Execute request - network errors will be resolved and thrown as NetworkError
+        return try await execute(request: urlRequest)
     }
 }
 

@@ -126,6 +126,10 @@ extension DefaultDataTransferService: DataTransferService {
             self.errorLogger.log(error: error)
             let resolvedError = self.resolve(networkError: error)
             throw resolvedError
+        } catch let error as DecodingError {
+            // Wrap decoding errors in DataTransferError.parsing
+            self.errorLogger.log(error: error)
+            throw DataTransferError.parsing(error)
         } catch {
             self.errorLogger.log(error: error)
             throw error
