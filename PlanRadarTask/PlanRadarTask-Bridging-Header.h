@@ -4,4 +4,3 @@
 #import "Infrastructure/ObjCNetworkPerformer.h"
 
 #endif /* PlanRadarTask_Bridging_Header_h */
-

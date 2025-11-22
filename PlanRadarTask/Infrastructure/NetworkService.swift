@@ -31,11 +31,11 @@ protocol NetworkErrorLogger {
 
 /// Executes endpoint-backed requests via the Objective-C bridge while keeping a Swift-friendly surface.
 final class DefaultNetworkService {
-
+    
     private let config: NetworkConfigurable
     private let performer: ObjCNetworkPerformer
     private let logger: NetworkErrorLogger
-
+    
     init(
         config: NetworkConfigurable,
         performer: ObjCNetworkPerformer = ObjCNetworkPerformer(),
@@ -45,7 +45,7 @@ final class DefaultNetworkService {
         self.performer = performer
         self.logger = logger
     }
-
+    
     private func execute(request: URLRequest) async throws -> Data? {
         logger.log(request: request)
         do {
@@ -58,12 +58,12 @@ final class DefaultNetworkService {
             throw networkError
         }
     }
-
+    
     private func resolve(error: Error) -> NetworkError {
         if let networkError = error as? NetworkError {
             return networkError
         }
-
+        
         let nsError = error as NSError
         if nsError.domain == ObjCNetworkErrorDomain,
            let statusCode = nsError.userInfo[ObjCNetworkStatusCodeKey] as? Int {
@@ -73,10 +73,10 @@ final class DefaultNetworkService {
 
         if let urlError = error as? URLError {
             switch urlError.code {
-            case .notConnectedToInternet: return .notConnected
-            case .cancelled: return .cancelled
-            default: return .generic(error)
-            }
+        case .notConnectedToInternet: return .notConnected
+        case .cancelled: return .cancelled
+        default: return .generic(error)
+        }
         }
 
         return .generic(error)
@@ -84,7 +84,7 @@ final class DefaultNetworkService {
 }
 
 extension DefaultNetworkService: NetworkService {
-
+    
     func request(endpoint: Requestable) async throws -> Data? {
         do {
             let urlRequest = try endpoint.urlRequest(with: config)
@@ -129,7 +129,7 @@ final class DefaultNetworkErrorLogger: NetworkErrorLogger {
 
 extension NetworkError {
     var isNotFoundError: Bool { return hasStatusCode(404) }
-
+    
     func hasStatusCode(_ codeError: Int) -> Bool {
         switch self {
         case let .error(code, _):

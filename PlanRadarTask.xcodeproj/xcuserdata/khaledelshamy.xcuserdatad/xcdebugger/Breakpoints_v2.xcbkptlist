@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "950DE164-CE1A-4B37-AFA9-1D0FCBC62EFA"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D469C13E-A63C-4AEF-AF63-1BA95D4F8183"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PlanRadarTask/Infrastructure/DataTransferService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "80"
+            endingLineNumber = "80"
+            landmarkName = "request(with:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "D469C13E-A63C-4AEF-AF63-1BA95D4F8183 - 2352629bd4ebb23"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for PlanRadarTask.DefaultDataTransferService.request&lt;&#x3c4;_0_0 where &#x3c4;_0_0: PlanRadarTask.ResponseRequestable, &#x3c4;_0_0.Response == ()&gt;(with: &#x3c4;_0_0) async throws -&gt; ()"
+                  moduleName = "PlanRadarTask.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/khaledelshamy/Desktop/PlanRadarTask/PlanRadarTask/Infrastructure/DataTransferService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "80"
+                  endingLineNumber = "80">
+               </Location>
+               <Location
+                  uuid = "D469C13E-A63C-4AEF-AF63-1BA95D4F8183 - ee985933fcca744d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) await resume partial function for PlanRadarTask.DefaultDataTransferService.request&lt;&#x3c4;_0_0 where &#x3c4;_0_0: PlanRadarTask.ResponseRequestable, &#x3c4;_0_0.Response == ()&gt;(with: &#x3c4;_0_0) async throws -&gt; ()"
+                  moduleName = "PlanRadarTask.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/khaledelshamy/Desktop/PlanRadarTask/PlanRadarTask/Infrastructure/DataTransferService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "80"
+                  endingLineNumber = "80">
+               </Location>
+               <Location
+                  uuid = "D469C13E-A63C-4AEF-AF63-1BA95D4F8183 - 788c0a64012fcf4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for PlanRadarTask.DefaultDataTransferService.request&lt;&#x3c4;_0_0 where &#x3c4;_0_0: PlanRadarTask.ResponseRequestable, &#x3c4;_0_0.Response == ()&gt;(with: &#x3c4;_0_0) async throws -&gt; ()"
+                  moduleName = "PlanRadarTask.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/khaledelshamy/Desktop/PlanRadarTask/PlanRadarTask/Infrastructure/DataTransferService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "80"
+                  endingLineNumber = "80">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D91B2EC4-F34D-4A37-803D-86932B325383"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PlanRadarTask/Infrastructure/DataTransferService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "82"
+            endingLineNumber = "82"
+            landmarkName = "request(with:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "DF3B5A88-2C57-49BD-91D4-BDC1CFFFE9CF"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "PlanRadarTask/Infrastructure/DataTransferService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "86"
+            endingLineNumber = "86"
+            landmarkName = "request(with:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

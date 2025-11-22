@@ -21,20 +21,25 @@ enum CitiesMappingError: Error, LocalizedError {
 
 extension CityResponseDTO {
     func toDomain() throws -> City {
-        guard let weatherInfo = weather.first else {
+        guard
+            let name = name,
+            let sys = sys,
+            let weatherInfo = weather?.first ?? weather?.first,
+            let updatedAtTimestamp = dt
+        else {
             throw CitiesMappingError.missingWeatherInfo
         }
 
-        let displayName = "\(name), \(sys.country)"
-        let temperatureString = String(format: "%.0f°", main.temp)
-        let humidityString = "\(main.humidity)%"
-        let windString = String(format: "%.1f m/s", wind.speed)
-        let description = weatherInfo.description.capitalized
-        let updatedAt = Date(timeIntervalSince1970: TimeInterval(dt))
+        let displayName = "\(name), \(sys.country ?? "N/A")"
+        let temperatureString = main?.temp.map { String(format: "%.0f°", $0) } ?? "--"
+        let humidityString = "\(main?.humidity ?? 0)%"
+        let windString = wind?.speed.map { String(format: "%.1f m/s", $0) } ?? "—"
+        let description = (weatherInfo.description ?? "Unknown").capitalized
+        let updatedAt = Date(timeIntervalSince1970: TimeInterval(updatedAtTimestamp))
 
         let iconURL: URL?
-        if !weatherInfo.icon.isEmpty {
-            let iconPath = "https://openweathermap.org/img/wn/\(weatherInfo.icon)@2x.png"
+        if let icon = weatherInfo.icon, !icon.isEmpty {
+            let iconPath = "https://openweathermap.org/img/wn/\(icon)@2x.png"
             iconURL = URL(string: iconPath)
             if iconURL == nil {
                 throw CitiesMappingError.invalidImageURL(iconPath)
