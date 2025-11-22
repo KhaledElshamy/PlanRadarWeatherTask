@@ -23,6 +23,7 @@ final class CitiesFlowCoordinator: ObservableObject {
     /// Navigation routes within the Cities module.
     enum Route: Hashable {
         case search
+        case history(City)
     }
     
     /// Current navigation path
@@ -40,6 +41,9 @@ final class CitiesFlowCoordinator: ObservableObject {
     /// Use case for fetching weather icons
     private let fetchWeatherIconUseCase: FetchWeatherIconUseCase
     
+    /// Coordinator for city history flow
+    private let historyCoordinator: CityHistoryFlowCoordinator
+    
     /// Initializes the coordinator with required dependencies.
     ///
     /// - Parameters:
@@ -47,15 +51,18 @@ final class CitiesFlowCoordinator: ObservableObject {
     ///   - deleteCity: Use case for deleting cities
     ///   - searchCoordinator: Coordinator for search flow
     ///   - fetchWeatherIconUseCase: Use case for fetching weather icons
+    ///   - historyCoordinator: Coordinator for city history flow
     init(
         fetchCities: FetchCitiesUseCase,
         deleteCity: DeleteCityUseCase,
         searchCoordinator: SearchFlowCoordinator,
-        fetchWeatherIconUseCase: FetchWeatherIconUseCase
+        fetchWeatherIconUseCase: FetchWeatherIconUseCase,
+        historyCoordinator: CityHistoryFlowCoordinator
     ) {
         self.viewModel = CitiesViewModel(fetchUseCase: fetchCities, deleteUseCase: deleteCity)
         self.searchCoordinator = searchCoordinator
         self.fetchWeatherIconUseCase = fetchWeatherIconUseCase
+        self.historyCoordinator = historyCoordinator
     }
     
     /// Creates the main cities view.
@@ -81,6 +88,13 @@ final class CitiesFlowCoordinator: ObservableObject {
     /// Dismisses the city details bottom sheet.
     func dismissCityDetails() {
         selectedCity = nil
+    }
+    
+    /// Navigates to the city history view.
+    ///
+    /// - Parameter city: The city to display history for
+    func showHistory(for city: City) {
+        path.append(.history(city))
     }
     
     /// Pops the search view from navigation.
@@ -112,6 +126,15 @@ final class CitiesFlowCoordinator: ObservableObject {
             viewModel: CityDetailsViewModel(city: city, fetchWeatherIconUseCase: fetchWeatherIconUseCase),
             city: city
         )
+    }
+    
+    /// Creates the city history view.
+    ///
+    /// - Parameter city: The city to display history for
+    /// - Returns: The city history view
+    @ViewBuilder
+    func historyView(for city: City) -> some View {
+        historyCoordinator.makeHistoryView(cityName: city.displayName)
     }
 }
 

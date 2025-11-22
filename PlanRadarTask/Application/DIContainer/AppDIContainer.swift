@@ -110,4 +110,22 @@ final class AppDIContainer {
     
     /// Use case for fetching weather icon images.
     lazy var fetchWeatherIconUseCase = FetchWeatherIconUseCase(repository: weatherIconRepository)
+    
+    // MARK: - City History
+    
+    /// Repository for fetching city history.
+    ///
+    /// **Specification:** Implements the CityHistoryRepository protocol, providing access to
+    /// historical weather data through the Core Data storage layer.
+    lazy var cityHistoryRepository: CityHistoryRepository = {
+        CityHistoryRepositoryImpl(context: persistenceController.container.viewContext)
+    }()
+    
+    /// Use case for fetching city history.
+    lazy var fetchCityHistoryUseCase = FetchCityHistoryUseCase(repository: cityHistoryRepository)
+    
+    /// Flow coordinator for the city history module navigation.
+    lazy var cityHistoryFlowCoordinator = CityHistoryFlowCoordinator(
+        fetchHistoryUseCase: fetchCityHistoryUseCase
+    )
 }

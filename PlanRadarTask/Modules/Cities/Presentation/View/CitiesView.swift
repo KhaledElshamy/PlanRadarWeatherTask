@@ -45,6 +45,8 @@ struct CitiesView: View {
                 switch route {
                 case .search:
                     coordinator.searchView()
+                case .history(let city):
+                    coordinator.historyView(for: city)
                 }
             }
             .sheet(item: $coordinator.selectedCity) { city in
@@ -113,11 +115,15 @@ struct CitiesView: View {
     private var list: some View {
         List {
             ForEach(cities) { city in
-                Button(action: {
-                    coordinator.showCityDetails(for: city)
-                }) {
-                    CityRow(city: city)
-                }
+                CityRow(
+                    city: city,
+                    onCityTap: {
+                        coordinator.showCityDetails(for: city)
+                    },
+                    onHistoryTap: {
+                        coordinator.showHistory(for: city)
+                    }
+                )
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
             }
@@ -132,18 +138,27 @@ struct CitiesView: View {
 
 private struct CityRow: View {
     let city: City
+    let onCityTap: () -> Void
+    let onHistoryTap: () -> Void
 
     var body: some View {
-        HStack {
-            Text(city.displayName)
-                .font(.system(size: 20, weight: .semibold))
-                .foregroundColor(.white)
+        HStack(spacing: 12) {
+            // City name button - shows details
+            Button(action: onCityTap) {
+                Text(city.displayName)
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .buttonStyle(PlainButtonStyle())
             
-            Spacer()
-            
-            Image(systemName: "chevron.right")
-                .foregroundColor(.gray)
-                .font(.system(size: 14, weight: .semibold))
+            // History arrow button - shows history
+            Button(action: onHistoryTap) {
+                Image(systemName: "arrow.right")
+                    .foregroundColor(Color(red: 1, green: 0.27, blue: 0.41))
+                    .font(.system(size: 16, weight: .semibold))
+            }
+            .buttonStyle(PlainButtonStyle())
         }
         .padding(.vertical, 12)
         .padding(.horizontal, 16)

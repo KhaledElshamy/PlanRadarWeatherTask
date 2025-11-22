@@ -29,7 +29,8 @@ final class AppFlowCoordinator: ObservableObject {
             fetchCities: appDIContainer.fetchCitiesUseCase,
             deleteCity: appDIContainer.deleteCityUseCase,
             searchCoordinator: appDIContainer.searchFlowCoordinator,
-            fetchWeatherIconUseCase: appDIContainer.fetchWeatherIconUseCase
+            fetchWeatherIconUseCase: appDIContainer.fetchWeatherIconUseCase,
+            historyCoordinator: appDIContainer.cityHistoryFlowCoordinator
         )
     }
 
