@@ -1,2 +1,7 @@
 PlanRadarTask/Secrets.xcconfig
 
+# Environment files
+.env
+.env.local
+.env.*.local
+**/.env
