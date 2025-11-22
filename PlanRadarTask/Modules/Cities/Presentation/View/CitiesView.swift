@@ -6,11 +6,16 @@
 //
 
 import SwiftUI
+import Combine
 
 struct CitiesView: View {
     
     @ObservedObject var viewModel: CitiesViewModel
     @ObservedObject var coordinator: CitiesFlowCoordinator
+    
+    @State private var cities: [City] = []
+    @State private var isLoading: Bool = false
+    @State private var errorMessage: String?
     
     var body: some View {
         NavigationStack(path: $coordinator.path) {
@@ -24,12 +29,12 @@ struct CitiesView: View {
                 }
                 .padding()
 
-                if let message = viewModel.errorMessage {
+                if let message = errorMessage {
                     ErrorBanner(message: message)
                         .transition(.move(edge: .top))
                 }
 
-                if viewModel.isLoading {
+                if isLoading {
                     ProgressView()
                         .progressViewStyle(CircularProgressViewStyle(tint: .pink))
                         .scaleEffect(1.3)
@@ -42,8 +47,23 @@ struct CitiesView: View {
                     coordinator.searchView()
                 }
             }
+            .sheet(item: $coordinator.selectedCity) { city in
+                coordinator.cityDetailsView(for: city)
+                    .presentationDetents([.fraction(1.0)])
+                    .presentationDragIndicator(.visible)
+                    .interactiveDismissDisabled(false)
+            }
+            .onReceive(viewModel.cities) { cities in
+                self.cities = cities
+            }
+            .onReceive(viewModel.isLoading) { loading in
+                self.isLoading = loading
+            }
+            .onReceive(viewModel.errorMessage) { message in
+                self.errorMessage = message
+            }
             .onAppear {
-                viewModel.loadCities()
+                viewModel.loadCitiesSubject.send()
             }
         }
     }
@@ -72,7 +92,7 @@ struct CitiesView: View {
 
     private var content: some View {
         Group {
-            if viewModel.cities.isEmpty, !viewModel.isLoading {
+            if cities.isEmpty, !isLoading {
                 placeholder
             } else {
                 list
@@ -92,12 +112,18 @@ struct CitiesView: View {
 
     private var list: some View {
         List {
-            ForEach(viewModel.cities) { city in
-                CityRow(city: city)
-                    .listRowBackground(Color.clear)
-                    .listRowSeparator(.hidden)
+            ForEach(cities) { city in
+                Button(action: {
+                    coordinator.showCityDetails(for: city)
+                }) {
+                    CityRow(city: city)
+                }
+                .listRowBackground(Color.clear)
+                .listRowSeparator(.hidden)
             }
-            .onDelete(perform: viewModel.deleteCity)
+            .onDelete { indexSet in
+                viewModel.deleteCitySubject.send(indexSet)
+            }
         }
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
@@ -108,40 +134,19 @@ private struct CityRow: View {
     let city: City
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Text(city.displayName)
-                    .font(.system(size: 20, weight: .semibold))
-                    .foregroundColor(.white)
-                Spacer()
-                Text(city.temperature)
-                    .font(.title3)
-                    .foregroundColor(.pink)
-            }
-
-            HStack(spacing: 10) {
-                Label(city.description, systemImage: "cloud.fill")
-                    .foregroundColor(.gray)
-                    .font(.caption)
-                Spacer()
-                Text(city.wind)
-                    .foregroundColor(.gray)
-                    .font(.caption2)
-            }
-
-            HStack {
-                Text("Humidity \(city.humidity)")
-                    .foregroundColor(.gray)
-                    .font(.caption2)
-                Spacer()
-                Text("Updated \(city.updatedAt.formatted(.dateTime.hour().minute()))")
-                    .foregroundColor(.gray)
-                    .font(.caption2)
-            }
+        HStack {
+            Text(city.displayName)
+                .font(.system(size: 20, weight: .semibold))
+                .foregroundColor(.white)
+            
+            Spacer()
+            
+            Image(systemName: "chevron.right")
+                .foregroundColor(.gray)
+                .font(.system(size: 14, weight: .semibold))
         }
-        .padding()
-        .background(.black.opacity(0.4))
-        .cornerRadius(20)
+        .padding(.vertical, 12)
+        .padding(.horizontal, 16)
     }
 }
 
@@ -176,12 +181,12 @@ private struct ErrorBanner: View {
     }
 }
 
-#Preview {
-    let container = AppDIContainer()
-    let coordinator = CitiesFlowCoordinator(
-        fetchCities: container.fetchCitiesUseCase,
-        deleteCity: container.deleteCityUseCase,
-        searchCoordinator: container.searchFlowCoordinator
-    )
-    CitiesView(viewModel: coordinator.viewModel, coordinator: coordinator)
-}
+//#Preview {
+//    let container = AppDIContainer()
+//    let coordinator = CitiesFlowCoordinator(
+//        fetchCities: container.fetchCitiesUseCase,
+//        deleteCity: container.deleteCityUseCase,
+//        searchCoordinator: container.searchFlowCoordinator
+//    )
+//    CitiesView(viewModel: coordinator.viewModel, coordinator: coordinator)
+//}

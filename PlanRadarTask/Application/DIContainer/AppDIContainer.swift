@@ -97,4 +97,17 @@ final class AppDIContainer {
         searchUseCase: searchCityUseCase,
         addUseCase: addCityUseCase
     )
+    
+    // MARK: - City Details
+    
+    /// Repository for fetching weather icon images.
+    ///
+    /// **Specification:** Implements the WeatherIconRepository protocol, providing access to
+    /// weather icon images through the image API network layer.
+    lazy var weatherIconRepository: WeatherIconRepository = {
+        WeatherIconRepositoryImpl(network: imageDataTransferService)
+    }()
+    
+    /// Use case for fetching weather icon images.
+    lazy var fetchWeatherIconUseCase = FetchWeatherIconUseCase(repository: weatherIconRepository)
 }

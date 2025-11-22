@@ -19,7 +19,8 @@ import Foundation
 /// - Public properties: All fields are immutable and publicly accessible
 /// - Conforms to Identifiable: Enables SwiftUI list rendering
 /// - Conforms to Equatable: Enables comparison and testing
-public struct City: Identifiable, Equatable {
+/// - Conforms to Hashable: Enables use in Hashable collections and navigation routes
+public struct City: Identifiable, Equatable, Hashable {
     /// Unique identifier for the city (typically "CityName, CountryCode")
     public let id: String
     
